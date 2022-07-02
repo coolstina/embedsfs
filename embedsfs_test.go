@@ -33,23 +33,23 @@ type EmbedsFSSuite struct {
 	embedsfs *EmbedsFS
 }
 
-//go:embed embeds
+//go:embed test/data/embeds
 var embeds embed.FS
 
 func (suite *EmbedsFSSuite) BeforeTest(suiteName, testName string) {
-	suite.embedsfsSpecifyPath = NewEmbedsFS(embeds, WithPath("embeds"))
+	suite.embedsfsSpecifyPath = NewEmbedsFS(embeds, WithPath("test/data/embeds"))
 	suite.embedsfs = NewEmbedsFS(embeds)
 }
 
 func (suite *EmbedsFSSuite) Test_EmbedsFSSpecifyPath_Filename() {
 	actual := suite.embedsfsSpecifyPath.Filename("readme.txt")
-	assert.Equal(suite.T(), `embeds/readme.txt`, actual)
+	assert.Equal(suite.T(), `test/data/embeds/readme.txt`, actual)
 
-	actual = suite.embedsfsSpecifyPath.Filename("embeds/readme.txt")
-	assert.Equal(suite.T(), `embeds/readme.txt`, actual)
+	actual = suite.embedsfsSpecifyPath.Filename("test/data/embeds/readme.txt")
+	assert.Equal(suite.T(), `test/data/embeds/readme.txt`, actual)
 
 	actual = suite.embedsfsSpecifyPath.Filename("api/swagger/spec.json")
-	assert.Equal(suite.T(), `embeds/api/swagger/spec.json`, actual)
+	assert.Equal(suite.T(), `test/data/embeds/api/swagger/spec.json`, actual)
 }
 
 func (suite *EmbedsFSSuite) Test_EmbedsFSSpecifyPath_FileContent() {
@@ -60,15 +60,17 @@ func (suite *EmbedsFSSuite) Test_EmbedsFSSpecifyPath_FileContent() {
 }
 
 func (suite *EmbedsFSSuite) Test_EmbedsFS_Filename() {
-	actual := suite.embedsfs.Filename("embeds/readme.txt")
-	assert.Equal(suite.T(), `embeds/readme.txt`, actual)
+	actual := suite.embedsfs.Filename(
+		"test/data/embeds/readme.txt")
+	assert.Equal(suite.T(), `test/data/embeds/readme.txt`, actual)
 
-	actual = suite.embedsfsSpecifyPath.Filename("embeds/api/swagger/spec.json")
-	assert.Equal(suite.T(), `embeds/api/swagger/spec.json`, actual)
+	actual = suite.embedsfsSpecifyPath.Filename(
+		"test/data/embeds/api/swagger/spec.json")
+	assert.Equal(suite.T(), `test/data/embeds/api/swagger/spec.json`, actual)
 }
 
 func (suite *EmbedsFSSuite) Test_EmbedsFS_FileContent() {
-	actual, err := suite.embedsfs.Content("embeds/readme.txt")
+	actual, err := suite.embedsfs.Content("test/data/embeds/readme.txt")
 	assert.NoError(suite.T(), err)
 	assert.NotNil(suite.T(), actual)
 	assert.Contains(suite.T(), fmt.Sprintf("%s", actual), "wu.shaohua@foxmail.com")
